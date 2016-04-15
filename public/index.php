@@ -1,8 +1,15 @@
 <?php
-include_once ('api.php');
+include_once ('../app/config/api.php');
 
 use phalcon\Mvc\Micro;
 $app = new Micro();
+/*
+$api = new Api();
+echo "Test start.";
+$result=$api->getApp("Skype");
+print_r($result);
+echo "Test end.";
+*/
 
 // Route start here
 

@@ -17,7 +17,7 @@ class Database {
 	public function connect() {
 		// Try to connect database with the setting.ini
 		if (! isset ( self::$connection )) {
-			$setting = parse_ini_file ( "./config.ini" );
+			$setting = parse_ini_file ( "config.ini" );
 			self::$connection = new mysqli ( $setting ['host'], $setting ['username'], $setting ['password'], $setting ['dbname'] );
 		}
 		
