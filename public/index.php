@@ -14,31 +14,24 @@ echo "Test end.";
 // Route start here
 
 // Retrieves all robots
-$app->get('/apps', function() use ($app) {
+$app->get('/get/apps', function() use ($app) {
 	$api = new Api();
 	$value = $api->getAllApps();
-	echo json_encode($value);
+	echo json_encode($value,JSON_UNESCAPED_SLASHES);
 });
 
 // Search for $appName
-$app->get('/apps/name={name}', function ($name) use ($app) {
+$app->get('/get/apps/{name}', function ($name) use ($app) {
 	$api = new Api();
 	$value = $api->getAppByName($name);
-	echo json_encode($value);	
+	echo json_encode($value,JSON_UNESCAPED_SLASHES);	
 });
 
 // Search for $appName
-$app->get('/apps/id={id:[0-9]+}', function ($id) use ($app) {
+$app->get('/get/apps/id/{id:[0-9]+}', function ($id) use ($app) {
 	$api = new Api();
 	$value = $api->getAppById($id);
-	echo json_encode($value);
-});
-	
-
-// Searches for robots with $appId in their app id
-$app->get('/apps/{id:[0-9]+}', function ($id) {
-	$api = new Api();
-	
+	echo json_encode($value,JSON_UNESCAPED_SLASHES);
 });
 
 $app->handle();
