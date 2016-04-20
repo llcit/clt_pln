@@ -80,27 +80,29 @@ class Api {
 	
 	/**
 	 * Fetch rows from the dtabase query: all data of an app
-	 * @param string $name
+	 * 
+	 * @param string $name        	
 	 * @return array Data rows
 	 */
 	public function getAppByName($name) {
-		self::newDb();
+		self::newDb ();
 		
 		$query = "SELECT * FROM app WHERE name = '$name'";
-		$result = self::$db->select($query);
+		$result = self::$db->select ( $query );
 		return $result;
 	}
 	
 	/**
 	 * Fetch rows from the dtabase query: all data of an app
-	 * @param integer $id
+	 * 
+	 * @param integer $id        	
 	 * @return array Data rows
 	 */
 	public function getAppById($id) {
-		self::newDb();
-	
+		self::newDb ();
+		
 		$query = "SELECT * FROM app WHERE id = '$id'";
-		$result = self::$db->select($query);
+		$result = self::$db->select ( $query );
 		return $result;
 	}
 	
@@ -147,15 +149,15 @@ class Api {
 	}
 	
 	/**
-	 * get an app name by app name
+	 * get an app name by app id
 	 *
 	 * @param string $name        	
 	 * @return boolean false / array when data exsits
 	 */
-	public function getAppName($name) {
+	public function getAppName($id) {
 		self::newDb ();
 		
-		$query = "SELECT name FROM app WHERE name = '$name'";
+		$query = "SELECT name FROM app WHERE id = '$id'";
 		$result = self::$db->select ( $query );
 		return $result;
 	}
@@ -325,7 +327,7 @@ class Api {
 	}
 	
 	/**
-	 * get an app format id by name
+	 * get an app format id by app name
 	 *
 	 * @param string $name        	
 	 * @return boolean false / mixed data on success
@@ -345,7 +347,27 @@ class Api {
 	}
 	
 	/**
-	 * get an app function id by name
+	 * get an app format name by app name
+	 *
+	 * @param string $name        	
+	 * @return boolean false / mixed data on success
+	 */
+	public function getAppFormatName($name) {
+		self::newDb ();
+		
+		$appId = self::getAppId ( $name );
+		$appId = $appId [0] ['id'];
+		if (! $appId) {
+			return;
+		} else {
+			$query = "SELECT format.name FROM app_format INNER JOIN format ON app_format.format_id = format.id WHERE app_format.app_id = '$appId'";
+			$result = self::$db->select ( $query );
+			return $result;
+		}
+	}
+	
+	/**
+	 * get an app function id by app name
 	 *
 	 * @param string $name        	
 	 * @return boolean false / mixed data on success
@@ -365,7 +387,27 @@ class Api {
 	}
 	
 	/**
-	 * get an app format id by name
+	 * get an app function name by app name
+	 *
+	 * @param string $name        	
+	 * @return boolean false / mixed data on success
+	 */
+	public function getAppFunctionName($name) {
+		self::newDb ();
+		
+		$appId = self::getAppId ( $name );
+		$appId = $appId [0] ['id'];
+		if (! $appId) {
+			return;
+		} else {
+			$query = "SELECT function.name FROM app_function INNER JOIN function ON app_function.function_id = function.id WHERE app_function.app_id = '$appId'";
+			$result = self::$db->select ( $query );
+			return $result;
+		}
+	}
+	
+	/**
+	 * get an app format id by app name
 	 *
 	 * @param string $name        	
 	 * @return boolean false / mixed data on success
@@ -380,6 +422,23 @@ class Api {
 		} else {
 			$query = "SELECT type_id FROM app_type WHERE app_id = '$appId'";
 			$result = self::$db->select ( $query );
+			return $result;
+		}
+	}
+	
+	/**
+	 * get an app type name by app name
+	 */
+	public function getAppTypeName($name) {
+		self::newDb();
+		
+		$appId = self::getAppId($name);
+		$appId = $appId[0]['id'];
+		if(!$appId) {
+			return;
+		} else {
+			$query = "SELECT type.name FROM app_type INNER JOIN type ON app_type.type_id = type.id WHERE app_type.app_id = '$appId'";
+			$result = self::$db->select($query);
 			return $result;
 		}
 	}
@@ -959,10 +1018,10 @@ class Api {
 		// Return false when fail to delete
 		return;
 	}
-
+	
 	/**
 	 * Delete format
-	 * 
+	 *
 	 * @param string $name        	
 	 * @return boolean false on fail
 	 */
@@ -972,7 +1031,7 @@ class Api {
 		// check the available
 		$result = self::getFormatId ( $name );
 		$result = $result [0] ['id'];
-
+		
 		if (! $result) {
 			return;
 		} else {
@@ -986,16 +1045,16 @@ class Api {
 	/**
 	 * Delete function
 	 *
-	 * @param string $name
+	 * @param string $name        	
 	 * @return boolean false on fail
 	 */
 	public function delFunction($name) {
 		self::newDb ();
-	
+		
 		// check the available
 		$result = self::getFunctionId ( $name );
 		$result = $result [0] ['id'];
-	
+		
 		if (! $result) {
 			return;
 		} else {
@@ -1009,16 +1068,16 @@ class Api {
 	/**
 	 * Delete type
 	 *
-	 * @param string $name
+	 * @param string $name        	
 	 * @return boolean false on fail
 	 */
 	public function delType($name) {
 		self::newDb ();
-	
+		
 		// check the available
 		$result = self::getTypeId ( $name );
 		$result = $result [0] ['id'];
-	
+		
 		if (! $result) {
 			return;
 		} else {
@@ -1029,9 +1088,7 @@ class Api {
 		return;
 	}
 	
-
 	// TODO start here again
-	
 }
 
 ?>
