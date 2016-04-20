@@ -537,7 +537,7 @@ class Api {
 		return;
 	}
 	
-	// TODO check again from here
+	// TODO check again about update data
 	
 	/**
 	 * update App description only if the app exists
@@ -1087,8 +1087,6 @@ class Api {
 		}
 		return;
 	}
-	
-	// TODO start here again
 }
 
 ?>
