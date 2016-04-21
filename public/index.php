@@ -3,41 +3,31 @@ include_once ('../app/config/api.php');
 
 use phalcon\Mvc\Micro;
 $app = new Micro ();
-/*
- * $api = new Api();
- * echo "Test start.";
- * $result=$api->getApp("Skype");
- * print_r($result);
- * echo "Test end.";
- */
 
 // Retrieves all apps
 $app->get ( '/get/apps', function () use ($app) {
 	$api = new Api ();
 	$value = $api->getAllApps ();
 	
-	//echo json_encode ( $value, JSON_UNESCAPED_SLASHES );
-	
 	// TODO Iteration for format, function, and type
 	foreach ( $value as $key => $val ) {
 		// App information
-		echo json_encode($value[$key], JSON_UNESCAPED_SLASHES);
+		$result["app"] = $value[$key];
+		
 		foreach ( $val as $k => $v ) {
 			if ($k == 'name') {
 				// App format
-				$result = $api->getAppFormatName ( $v );
-				echo json_encode ( $result );
-				
+				$result["format"] = $api->getAppFormatName ( $v );
+						
 				// App function
-				$result = $api->getAppFunctionName ( $v );
-				echo json_encode ( $result );
-				
+				$result["function"] = $api->getAppFunctionName ( $v );
+						
 				// App type
-				$result = $api->getAppTypeName ( $v );
-				echo json_encode ( $result );
+				$result["type"] = $api->getAppTypeName ( $v );
 			}
 		}
-		//echo "<br>";
+		echo json_encode($result, JSON_UNESCAPED_SLASHES);
+		echo "<br>";
 	}
 } );
 
@@ -47,19 +37,18 @@ $app->get ( '/get/apps/{name}', function ($name) use ($app) {
 	
 	// App information
 	$value = $api->getAppByName ( $name );
-	echo json_encode ( $value, JSON_UNESCAPED_SLASHES );
+	$result["app"] = $value;
 	
 	// App format
-	$value = $api->getAppFormatName ( $name );
-	echo json_encode ( $value );
+	$result["format"] = $api->getAppFormatName ( $name );
 	
 	// App function
-	$value = $api->getAppFunctionName ( $name );
-	echo json_encode ( $value );
+	$result["function"] = $api->getAppFunctionName ( $name );
 	
 	// App type
-	$value = $api->getAppTypeName ( $name );
-	echo json_encode ( $value );
+	$result["type"] = $api->getAppTypeName ( $name );	
+
+	echo json_encode ( $result, JSON_UNESCAPED_SLASHES );
 } );
 
 // Search for $appId
@@ -68,23 +57,30 @@ $app->get ( '/get/apps/id/{id:[0-9]+}', function ($id) use ($app) {
 	
 	// App information
 	$value = $api->getAppById ( $id );
-	echo json_encode ( $value, JSON_UNESCAPED_SLASHES );
 	
+	// new array for incloding all
+	$result["app"] = $value;
 	// App name from app id
 	$name = $api->getAppName ( $id );
 	$name = $name [0] ['name'];
 	
 	// App format
-	$value = $api->getAppFormatName ( $name );
-	echo json_encode ( $value );
+	$result["format"] = $api->getAppFormatName ( $name );
 	
 	// App function
-	$value = $api->getAppFunctionName ( $name );
-	echo json_encode ( $value );
+	$result["function"] = $api->getAppFunctionName ( $name );
 	
 	// App type
-	$value = $api->getAppTypeName ( $name );
-	echo json_encode ( $value );
+	$result["type"] = $api->getAppTypeName ( $name );	
+
+	echo json_encode ( $result, JSON_UNESCAPED_SLASHES );
 } );
+
+// TODO login URI
+
+$app->get('/login/user/{name}', function () use ($app) {
+	
+	
+});
 
 $app->handle ();
