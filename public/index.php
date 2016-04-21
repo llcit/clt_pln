@@ -7,7 +7,7 @@ $app = new Micro ();
 // dummy index
 
 $app->get('/',function () use($app) {
-	echo "Personal Learning Network Development Sites.";
+	echo "<p>Personal Learning Network Development Sites.</p>";
 });
 
 // Retrieves all apps
@@ -33,7 +33,7 @@ $app->get ( '/get/apps', function () use ($app) {
 			}
 		}
 		echo json_encode($result, JSON_UNESCAPED_SLASHES);
-		echo "<br>";
+		//echo "<br>";
 	}
 } );
 
