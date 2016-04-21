@@ -4,6 +4,12 @@ include_once ('../app/config/api.php');
 use phalcon\Mvc\Micro;
 $app = new Micro ();
 
+// dummy index
+
+$app->get('/',function () use($app) {
+	echo "Personal Learning Network Development Sites.";
+});
+
 // Retrieves all apps
 $app->get ( '/get/apps', function () use ($app) {
 	$api = new Api ();
