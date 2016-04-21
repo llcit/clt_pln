@@ -7,7 +7,7 @@ $app = new Micro ();
 // dummy index
 
 $app->get('/',function () use($app) {
-	echo "<p>Personal Learning Network Development Sites.</p>";
+	echo "<h3>Personal Learning Network Development Sites.<h3>";
 });
 
 // Retrieves all apps
