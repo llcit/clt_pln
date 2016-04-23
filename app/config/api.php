@@ -34,7 +34,17 @@ class Api {
 		self::newDb ();
 		
 		// Select all data
-		$query = "SELECT * FROM app";
+		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
+		       	 	  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
+		       	 	  FROM app 
+		       	 	  LEFT JOIN app_format  ON app.id = app_format.app_id 
+				  INNER JOIN format ON app_format.format_id = format.id
+				  LEFT JOIN app_function ON app.id = app_function.app_id
+				  INNER JOIN function ON app_function.function_id = function.id
+				  LEFT JOIN app_type ON app.id = app_type.app_id
+				  INNER JOIN type ON app_type.type_id = type.id
+				  GROUP BY app.id
+				  ORDER BY app.id";
 		$result = self::$db->select ( $query );
 		return $result;
 	}
@@ -86,8 +96,17 @@ class Api {
 	 */
 	public function getAppByName($name) {
 		self::newDb ();
-		
-		$query = "SELECT * FROM app WHERE name = '$name'";
+		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
+                                   GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
+                                   FROM app
+                                   LEFT JOIN app_format ON app.id = app_format.app_id and app.name = '$name'
+                                   INNER JOIN format ON app_format.format_id = format.id
+                                   LEFT JOIN app_function ON app.id = app_function.app_id and app.name ='$name'
+                                   INNER JOIN function ON app_function.function_id = function.id
+                                   LEFT JOIN app_type ON app.id = app_type.app_id and app.name ='$name'
+                                   INNER JOIN type ON app_type.type_id = type.id
+                                   GROUP BY app.id
+                                   ORDER BY app.id";
 		$result = self::$db->select ( $query );
 		return $result;
 	}
@@ -100,8 +119,17 @@ class Api {
 	 */
 	public function getAppById($id) {
 		self::newDb ();
-		
-		$query = "SELECT * FROM app WHERE id = '$id'";
+		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
+                                  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
+                                  FROM app
+                                  LEFT JOIN app_format ON app.id = app_format.app_id and app.id = '$id'
+                                  INNER JOIN format ON app_format.format_id = format.id
+                                  LEFT JOIN app_function ON app.id = app_function.app_id and app.id ='$id'
+                                  INNER JOIN function ON app_function.function_id = function.id
+                                  LEFT JOIN app_type ON app.id = app_type.app_id and app.id ='$id'
+                                  INNER JOIN type ON app_type.type_id = type.id
+                                  GROUP BY app.id
+                                  ORDER BY app.id";
 		$result = self::$db->select ( $query );
 		return $result;
 	}
