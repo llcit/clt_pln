@@ -3,7 +3,7 @@
 include_once ('../app/config/api.php');
 
 // header for json format
-header('Content-type: application/json');
+header('Content-type: application/json; charset=utf-8');
 
 use phalcon\Mvc\Micro;
 $app = new Micro ();
