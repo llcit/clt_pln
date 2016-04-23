@@ -17,9 +17,7 @@ $app->get ( '/get/apps', function () use ($app) {
 	
 	// TODO Iteration for format, function, and type
 	foreach ( $value as $key => $val ) {
-		// App information
-		$result["app"] = $value[$key];
-		
+		$result["app"][$key] = $val;
 		foreach ( $val as $k => $v ) {
 			if ($k == 'name') {
 				// App format
@@ -33,7 +31,6 @@ $app->get ( '/get/apps', function () use ($app) {
 			}
 		}
 		echo json_encode($result, JSON_UNESCAPED_SLASHES);
-		//echo "<br>";
 	}
 } );
 
@@ -65,7 +62,7 @@ $app->get ( '/get/apps/id/{id:[0-9]+}', function ($id) use ($app) {
 	$value = $api->getAppById ( $id );
 	
 	// new array for incloding all
-	$result["app"] = $value;
+$result["app"] = $value;
 	// App name from app id
 	$name = $api->getAppName ( $id );
 	$name = $name [0] ['name'];
