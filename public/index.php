@@ -113,12 +113,26 @@ $app->post ( '/post/apps', function () use ($app) {
 		$result = $api->updateAppTutorial($newApp->name, $newApp->tutorial);
 		$result = $api->updateAppUri($newApp->name, $newApp->uri);
 
+        // Split the data and input all data
+        $formats = explode(',', $newApp->format);
+        foreach($formats as $format) {
+            $result = $api->addAppFormat($newApp->name, $format);
+        }
+        
+        $functions = explode(',', $newApp->function);
+        foreach($functions as $function){
+            $result = $api->addAppFunction($newApp->name, $function);
+        }
+        
+        $types = explode(',', $newApp->type);
+        foreach($types as $type) {
+            $result = $api->addAppType($newApp->name, $type);
+        }
         $response->setStatusCode(201, "Created");
 		$response->setJsonContent ( array (
-				'status' => 'OK' 
+            'status' => 'OK' 
 		) );
 	}
-	
 	return $response;
 } );
 
