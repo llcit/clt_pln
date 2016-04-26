@@ -130,6 +130,76 @@ $app->post ( '/post/apps', function () use ($app) {
 
 // TODO Update an app
 $app->put ( '/put/apps', function () use ($app) {
+	$api = new Api ();
+	$response = new Response ();
+	$modApp = $app->request->getJsonRawBody ();
+
+	if (! array_key_exists ( 'name', $modApp ) || $modApp->name == NULL) {
+		$response->setStatusCode ( 400, "MissingRequestedQueryParameter" );
+		$response->setJsonContent ( array (
+				'status' => 'ERROR',
+				'messages' => 'Application name requered.'
+		) );
+		return $response;
+	}
+
+	$result = $api->getAppId ( $modApp->name );
+	if (! $result) {
+		$response->setStatusCode ( 400, "MissingRequestedQueryParameter" );
+		$response->setJsonContent ( array (
+				'status' => "ERROR",
+				'Messages' => " The application does not exist."
+		) );
+		return $response;
+	}
+
+	if ($modApp->description != NULL) {
+		$result = $api->updateAppDescription ( $modName->name, $modApp->description );
+		if (! $result) {
+			$response->setStatusCode ( 400, "InvalidInput" );
+			$response->setJsonContent ( array (
+					'status' => 'Error',
+					'messages' => 'The description data update error.'
+			) );
+			return $response;
+		}
+	}
 } );
+
+$app->delete('/del/apps', function () use($app){
+	$api = new Api();
+	$response = new Response();
+	$delApp = $app->request->getJsonRawBody();
+
+	if(!array_key_exists('name', $delApp) || $delApp->name == NULL) {
+		$response->setStatusCode(400, "MissingRequestedQueryParameter");
+		$response->setJsonContent( array (
+				'status' => 'ERROR',
+				'messages' => 'The application name requered.'
+		));
+	} elseif (!$api->getAppId($delApp->name)){
+		$response->setStatusCode(400, "MissingRequestQueryParameter");
+		$response->setJsonContent( array (
+				'status' => 'ERROR',
+				'messages' => 'The aplication does not exist'
+		));
+	} else {
+		$result = $api->delApp($delApp->name);
+		if(!$result) {
+			$response->setStatusCode(400, "InvalidInput");
+			$response->setJsonContent( array (
+					'status' => 'ERROR',
+					'messages' => 'The application delete error.'
+			));
+		} else {
+			$response->setStatusCode(200, "OK");
+			$response->setJsonContent( array (
+					'status' => 'OK',
+					'messages' => "Deleted"
+			));
+		}
+	}
+    return $response;
+});
 
 $app->handle ();

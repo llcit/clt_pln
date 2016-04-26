@@ -577,9 +577,9 @@ class Api {
 		self::newDb ();
 
 		// Check the app exists
-		$appName = self::getAppId ( $name );
+		$appId = self::getAppId ( $name );
 
-		if (! $appName) {
+		if (! $appId) {
 			return $return;
 		} else {
 			$query = "UPDATE app SET description = '$description' WHERE name = '$name'";
