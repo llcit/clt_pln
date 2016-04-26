@@ -11,7 +11,7 @@ use Phalcon\Http\Response;
 $app = new Micro ();
 
 $app->get ( '/', function () use ($app) {
-    echo "<h3>Personal Learning Network Development Sites.<h3>";
+	echo "<h3>Personal Learning Network Development Sites.<h3>";
 } );
 
 // Retrieves all apps
@@ -43,94 +43,86 @@ $app->get ( '/login/user/{name}', function () use ($app) {
 
 $app->post ( '/post/apps', function () use ($app) {
 	$api = new Api ();
-    $response = new Response();
+	$response = new Response ();
 	$newApp = $app->request->getJsonRawBody ();
 
-    //Check app name
-    if (! array_key_exists ('name', $newApp) || $newApp->name == NULL) {
-        $response->setStatusCode(400, "MissingRequeredQueryParameter");
-        $response->setJsonContent(
-            array (
-                'status' => 'ERROR',
-                'messages' => 'Application name must exist'
-            )
-        );
-        return $response;
-    }    
+	// Check app name
+	if (! array_key_exists ( 'name', $newApp ) || $newApp->name == NULL) {
+		$response->setStatusCode ( 400, "MissingRequeredQueryParameter" );
+		$response->setJsonContent ( array (
+				'status' => 'ERROR',
+				'messages' => 'Application name must exist'
+		) );
+		return $response;
+	}
 
-    // Check format
-    if (! array_key_exists ('format', $newApp) || $newApp->format == NULL) {
-        $response->setStatusCode(400, "MissingRequiredQueryParameter");
-        $response->setJsonContent (
-            array (
-                'status' => 'ERROR',
-                'messages' => 'Application format must exist.'
-            )
-        );
-        return $response;
-    }
+	// Check format
+	if (! array_key_exists ( 'format', $newApp ) || $newApp->format == NULL) {
+		$response->setStatusCode ( 400, "MissingRequiredQueryParameter" );
+		$response->setJsonContent ( array (
+				'status' => 'ERROR',
+				'messages' => 'Application format must exist.'
+		) );
+		return $response;
+	}
 
-    // Check function
-    if(! array_key_exists ('function', $newApp) || $newApp->function == NULL) {
-        $response->setStatusCode(400, "MissingRequestedQueryParameter");
-        $response->setJsonContent (
-            array (
-                'status' => 'ERROR',
-                'messages' => 'Application function must exist.'
-            )
-        );
-        return $response;
-    }
+	// Check function
+	if (! array_key_exists ( 'function', $newApp ) || $newApp->function == NULL) {
+		$response->setStatusCode ( 400, "MissingRequestedQueryParameter" );
+		$response->setJsonContent ( array (
+				'status' => 'ERROR',
+				'messages' => 'Application function must exist.'
+		) );
+		return $response;
+	}
 
-    // Check type
-    if(! array_key_exists ('type', $newApp) || $newApp->type == NULL) {
-        $response->setStatusCode(400, "MissingRequestedQueryParameter");
-        $response->setJsonContent (
-            array (
-                'status' => 'ERROR',
-                'messages' => 'Application type must exist.'
-            )
-        );
-        return $response;
-    }
-    
+	// Check type
+	if (! array_key_exists ( 'type', $newApp ) || $newApp->type == NULL) {
+		$response->setStatusCode ( 400, "MissingRequestedQueryParameter" );
+		$response->setJsonContent ( array (
+				'status' => 'ERROR',
+				'messages' => 'Application type must exist.'
+		) );
+		return $response;
+	}
+
 	$result = $api->addApp ( $newApp->name );
-	
+
 	if (! $result) {
 		$response->setStatuscode ( 409, "Conflict" );
 		$response->setJsonContent ( array (
-            'status' => 'ERROR',
-            'messages' => 'The application already exists.'
+				'status' => 'ERROR',
+				'messages' => 'The application already exists.'
 		) );
 	} else {
 		// Add additional information
-		$result = $api->updateAppDescription($newApp->name, $newApp->description);
-		$result = $api->updateAppIcon($newApp->name, $newApp->icon);
-		$result = $api->updateAppPrice($newApp->name, $newApp->price);
-		$result = $api->updateAppPrivacy($newApp->name, $newApp->privacy);
-		$result = $api->updateAppSupport($newApp->name, $newApp->support);
-		$result = $api->updateAppTestimonial($newApp->name, $newApp->testimonial);
-		$result = $api->updateAppTutorial($newApp->name, $newApp->tutorial);
-		$result = $api->updateAppUri($newApp->name, $newApp->uri);
+		$result = $api->updateAppDescription ( $newApp->name, $newApp->description );
+		$result = $api->updateAppIcon ( $newApp->name, $newApp->icon );
+		$result = $api->updateAppPrice ( $newApp->name, $newApp->price );
+		$result = $api->updateAppPrivacy ( $newApp->name, $newApp->privacy );
+		$result = $api->updateAppSupport ( $newApp->name, $newApp->support );
+		$result = $api->updateAppTestimonial ( $newApp->name, $newApp->testimonial );
+		$result = $api->updateAppTutorial ( $newApp->name, $newApp->tutorial );
+		$result = $api->updateAppUri ( $newApp->name, $newApp->uri );
 
-        // Split the data and input all data
-        $formats = explode(',', $newApp->format);
-        foreach($formats as $format) {
-            $result = $api->addAppFormat($newApp->name, $format);
-        }
-        
-        $functions = explode(',', $newApp->function);
-        foreach($functions as $function){
-            $result = $api->addAppFunction($newApp->name, $function);
-        }
-        
-        $types = explode(',', $newApp->type);
-        foreach($types as $type) {
-            $result = $api->addAppType($newApp->name, $type);
-        }
-        $response->setStatusCode(201, "Created");
+		// Split the data and input all data
+		$formats = explode ( ',', $newApp->format );
+		foreach ( $formats as $format ) {
+			$result = $api->addAppFormat ( $newApp->name, $format );
+		}
+
+		$functions = explode ( ',', $newApp->function );
+		foreach ( $functions as $function ) {
+			$result = $api->addAppFunction ( $newApp->name, $function );
+		}
+
+		$types = explode ( ',', $newApp->type );
+		foreach ( $types as $type ) {
+			$result = $api->addAppType ( $newApp->name, $type );
+		}
+		$response->setStatusCode ( 201, "Created" );
 		$response->setJsonContent ( array (
-            'status' => 'OK' 
+				'status' => 'OK'
 		) );
 	}
 	return $response;
