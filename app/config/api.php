@@ -137,139 +137,13 @@ class Api {
 	/**
 	 * get an description by app name
 	 *
-	 * @param string $name
-	 * @return description or false
+	 * @param string $name, $key
+	 * @return $key or false
 	 */
-	public function getAppDescription($name) {
+	public function getAppInfo($name, $key) {
 		self::newDb ();
 
-		$query = "SELECT description FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app icon by app name
-	 *
-	 * @param string $name
-	 * @return icon or false
-	 */
-	public function getAppIcon($name) {
-		self::newDb ();
-
-		$query = "SELECT icon FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app id by app name
-	 *
-	 * @param string $name
-	 * @return id or false
-	 */
-	public function getAppId($name) {
-		self::newDb ();
-
-		$query = "SELECT id FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app name by app id
-	 *
-	 * @param string $name
-	 * @return boolean false / array when data exsits
-	 */
-	public function getAppName($id) {
-		self::newDb ();
-
-		$query = "SELECT name FROM app WHERE id = '$id'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app price by app name
-	 *
-	 * @param string $name
-	 * @return price or false
-	 */
-	public function getAppPrice($name) {
-		self::newDb ();
-
-		$query = "SELECT price FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app privacy by app name
-	 *
-	 * @param string $name
-	 * @return privacy or false
-	 */
-	public function getAppPrivacy($name) {
-		self::newDb ();
-
-		$query = "SELECT privacy FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app support by app name
-	 *
-	 * @param string $name
-	 * @return support or false
-	 */
-	public function getAppSupport($name) {
-		self::newDb ();
-
-		$query = "SELECT support FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app testimonial by app name
-	 *
-	 * @param string $name
-	 * @return testimonial or false
-	 */
-	public function getAppTestimonial($name) {
-		self::newDb ();
-
-		$query = "SELECT testimonial FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app tutorial by app name
-	 *
-	 * @param string $name
-	 * @return tutorial or false
-	 */
-	public function getAppTutorial($name) {
-		self::newDb ();
-
-		$query = "SELECT tutorial FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app uri by app name
-	 *
-	 * @param string $name
-	 * @return uri or false
-	 */
-	public function getAppUri($name) {
-		self::newDb ();
-
-		$query = "SELECT uri FROM app WHERE name = '$name'";
+		$query = "SELECT $key FROM app WHERE name = '$name'";
 		$result = self::$db->select ( $query );
 		return $result;
 	}
@@ -363,7 +237,7 @@ class Api {
 	public function getAppFormatId($name) {
 		self::newDb ();
 
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		if (! $appId) {
 			return;
@@ -383,7 +257,7 @@ class Api {
 	public function getAppFormatName($name) {
 		self::newDb ();
 
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		if (! $appId) {
 			return;
@@ -403,7 +277,7 @@ class Api {
 	public function getAppFunctionId($name) {
 		self::newDb ();
 
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		if (! $appId) {
 			return;
@@ -423,7 +297,7 @@ class Api {
 	public function getAppFunctionName($name) {
 		self::newDb ();
 
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		if (! $appId) {
 			return;
@@ -443,7 +317,7 @@ class Api {
 	public function getAppTypeId($name) {
 		self::newDb ();
 
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		if (! $appId) {
 			return;
@@ -460,7 +334,7 @@ class Api {
 	public function getAppTypeName($name) {
 		self::newDb ();
 
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppIinfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		if (! $appId) {
 			return;
@@ -553,7 +427,7 @@ class Api {
 		self::newDb ();
 
 		// Check the app exists
-		$result = self::getAppId ( $name );
+		$result = self::getAppInfo ( $name, 'id' );
 
 		// Insert an app data only if the app does not exist
 		if (! $result) {
@@ -567,197 +441,23 @@ class Api {
 
 	// TODO check again about update data
 
-	/**
-	 * update App description only if the app exists
-	 *
-	 * @param string $name
-	 * @return boolean false / mixed data on success
-	 */
-	public function updateAppDescription($name, $description) {
-		self::newDb ();
+    /**
+     * Update App
+     */
 
-		// Check the app exists
-		$appId = self::getAppId ( $name );
+    public function updateApp($name, $key, $value) {
+        self::newDb();
+        $appId = self::getAppInfo($name, 'id');
 
-		if (! $appId) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET description = '$description' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * update App icon (override) only if the app exists
-	 *
-	 * @param string $name
-	 * @param string $icon
-	 *
-	 * @return boolean false / mixed data on success
-	 */
-	public function updateAppIcon($name, $icon) {
-		self::newDb ();
-
-		// Check the app exists
-		$appName = self::getAppId ( $name );
-
-		if (! $appName) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET icon = '$icon' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * update App price (override) only if the app exits
-	 *
-	 * @param string $name
-	 * @param string $price
-	 * @return boolean false / mixed data on success
-	 */
-	public function updateAppPrice($name, $price) {
-		self::newDb ();
-
-		// Check the app exists
-		$appName = self::getAppId ( $name );
-
-		if (! $appName) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET price = '$price' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * update App privacy (overide) only if the app exist
-	 *
-	 * @param string $name
-	 * @param string $privacy
-	 * @return boolean false / mixed data on success
-	 */
-	public function updateAppPrivacy($name, $privacy) {
-		self::newDb ();
-
-		// Check the app exists
-		$appName = self::getAppId ( $name );
-
-		if (! $appName) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET privacy = '$privacy' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * update App support only (overide) only if the app exist
-	 *
-	 * @param string $name
-	 * @param string $support
-	 * @return boolean false / mixed data on success
-	 */
-	public function updateAppSupport($name, $support) {
-		self::newDb ();
-
-		// Check the app exists
-		$appName = self::getAppId ( $name );
-
-		if (! $appName) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET support = '$support' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * update App testmonial only if the app exist
-	 *
-	 * @param string $name
-	 * @param string $testmonial
-	 * @return boolean false / true on success
-	 */
-	public function updateAppTestimonial($name, $testimonial) {
-		self::newDb ();
-
-		// Check the app exists
-		$appName = self::getAppId ( $name );
-
-		if (! $appName) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET testimonial = '$testimonial' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * update App tutorial only if the app exist
-	 *
-	 * @param string $name
-	 * @param string $tutorial
-	 * @return boolean false / mixed data on success
-	 */
-	public function updateAppTutorial($name, $tutorial) {
-		self::newDb ();
-
-		// Check the app exists
-		$appName = self::getAppId ( $name );
-
-		if (! $appName) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET tutorial = '$tutorial' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * update App uri only if the app exist
-	 *
-	 * @param string $name
-	 * @param string $uri
-	 * @return boolean false / mixed data on success
-	 */
-	public function updateAppUri($name, $uri) {
-		self::newDb ();
-
-		// Check the app exists
-		$appName = self::getAppId ( $name );
-
-		if (! $appName) {
-			return $return;
-		} else {
-			$query = "UPDATE app SET uri = '$uri' WHERE name = '$name'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
+        if(!$appId) {
+            return ;
+        } else {
+            $query = "UPDATE app SET $key = '$value' WHERE name = '$name'";
+            $result = self::$db->query($query);
+            return $result;
+        }
+        return;
+    }
 
 	/**
 	 * add format only if it does not exist
@@ -836,7 +536,7 @@ class Api {
 		self::newDb ();
 
 		// Check the app exists
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		$formatId = self::getFormatId ( $format );
 		$formatId = $formatId [0] ['id'];
@@ -863,7 +563,7 @@ class Api {
 		self::newDb ();
 
 		// Check the app exists
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		$functionId = self::getFunctionId ( $function );
 		$functionId = $functionId [0] ['id'];
@@ -889,7 +589,7 @@ class Api {
 	public function addAppType($name, $type) {
 		self::newDb ();
 		// Check the app exists
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 		$typeId = self::getTypeId ( $type );
 		$typeId = $typeId [0] ['id'];
@@ -942,7 +642,7 @@ class Api {
 	public function delAppFormat($name) {
 		self::newDb ();
 		// Check the app exists
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 
 		if (! $appId) {
@@ -964,7 +664,7 @@ class Api {
 	public function delAppFunction($name) {
 		self::newDb ();
 		// Check the app exists
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 
 		if (! $appId) {
@@ -987,7 +687,7 @@ class Api {
 	public function delAppType($name) {
 		self::newDb ();
 		// Check the app exists
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 
 		if (! $appId) {
@@ -1011,7 +711,7 @@ class Api {
 		self::newDb ();
 
 		// Check the app exists
-		$appId = self::getAppId ( $name );
+		$appId = self::getAppInfo ( $name, 'id' );
 		$appId = $appId [0] ['id'];
 
 		if (! $appId) {
@@ -1020,15 +720,15 @@ class Api {
 			// Delete an app from app_format, app_function, and app_type when success to delete the app
 			$result = self::delAppFormat ( $name );
 			if (! $result) {
-				return "Format";
+				return;
 			}
 			$result = self::delAppFunction ( $name );
 			if (! $result) {
-				return "Function";
+				return;
 			}
 			$result = self::delAppType ( $name );
 			if (! $result) {
-				return "Type";
+				return;
 			}
 
 			// Delete an app
