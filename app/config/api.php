@@ -35,9 +35,9 @@ class Api {
 		
 		// Select all data
 		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
-		       	 	  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
-		       	 	  FROM app 
-		       	 	  LEFT JOIN app_format  ON app.id = app_format.app_id 
+	       	 	  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
+	       	 	  FROM app 
+	       	 	  LEFT JOIN app_format  ON app.id = app_format.app_id 
 				  INNER JOIN format ON app_format.format_id = format.id
 				  LEFT JOIN app_function ON app.id = app_function.app_id
 				  INNER JOIN function ON app_function.function_id = function.id
@@ -549,11 +549,11 @@ class Api {
 	 * @param string $name        	
 	 * @return boolean false / mixed data on success
 	 */
-	public function addAppName($name) {
+	public function addApp($name) {
 		self::newDb ();
 		
 		// Check the app exists
-		$result = self::getAppName ( $name );
+		$result = self::getAppId ( $name );
 		
 		// Insert an app data only if the app does not exist
 		if (! $result) {
@@ -577,7 +577,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
@@ -602,7 +602,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
@@ -626,7 +626,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
@@ -650,7 +650,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
@@ -674,7 +674,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
@@ -698,7 +698,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
@@ -722,7 +722,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
@@ -746,7 +746,7 @@ class Api {
 		self::newDb ();
 		
 		// Check the app exists
-		$appName = self::getAppName ( $name );
+		$appName = self::getAppId ( $name );
 		
 		if (! $appName) {
 			return $return;
