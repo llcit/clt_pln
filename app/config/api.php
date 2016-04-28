@@ -7,7 +7,9 @@ include_once ('config.php');
  *
  */
 class Api {
-	// New database
+	/**
+	 * New database
+	 */
 	protected static $db;
 
 	/**
@@ -20,381 +22,51 @@ class Api {
 	}
 
 	/**
-	 * **************************
-	 * get functions start here *
-	 * **************************
-	 */
-
-	/**
-	 * Fetch rows from the database query: all apps
-	 *
-	 * @return array Data rows
-	 */
-	public function getAllApps() {
-		self::newDb ();
-
-		// Select all data
-		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
-	       	 	  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
-	       	 	  FROM app
-	       	 	  LEFT JOIN app_format  ON app.id = app_format.app_id
-				  INNER JOIN format ON app_format.format_id = format.id
-				  LEFT JOIN app_function ON app.id = app_function.app_id
-				  INNER JOIN function ON app_function.function_id = function.id
-				  LEFT JOIN app_type ON app.id = app_type.app_id
-				  INNER JOIN type ON app_type.type_id = type.id
-				  GROUP BY app.id
-				  ORDER BY app.id";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * Fetch rows from the database query: format ids
-	 *
-	 * @return array Data rows
-	 */
-	public function getAllFormatId() {
-		self::newDb ();
-
-		$query = "SELECT * FROM format";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * Fetch rows from the database query: function ids
-	 *
-	 * @return array Data rows
-	 */
-	public function getAllFunctionId() {
-		self::newDb ();
-
-		$query = "SELECT * FROM function";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * Fetch rows from the database query: type ids
-	 *
-	 * @return array Data rows
-	 */
-	public function getAllTypeId() {
-		self::newDb ();
-
-		$query = "SELECT * FROM type";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * Fetch rows from the dtabase query: all data of an app
+	 * Add a new app name
 	 *
 	 * @param string $name
-	 * @return array Data rows
+	 * @return If the app is added, return true, otherwise false
 	 */
-	public function getAppByName($name) {
-		self::newDb ();
-		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
-                                   GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
-                                   FROM app
-                                   LEFT JOIN app_format ON app.id = app_format.app_id and app.name = '$name'
-                                   INNER JOIN format ON app_format.format_id = format.id
-                                   LEFT JOIN app_function ON app.id = app_function.app_id and app.name ='$name'
-                                   INNER JOIN function ON app_function.function_id = function.id
-                                   LEFT JOIN app_type ON app.id = app_type.app_id and app.name ='$name'
-                                   INNER JOIN type ON app_type.type_id = type.id
-                                   GROUP BY app.id
-                                   ORDER BY app.id";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * Fetch rows from the dtabase query: all data of an app
-	 *
-	 * @param integer $id
-	 * @return array Data rows
-	 */
-	public function getAppById($id) {
-		self::newDb ();
-		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
-                                  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
-                                  FROM app
-                                  LEFT JOIN app_format ON app.id = app_format.app_id and app.id = '$id'
-                                  INNER JOIN format ON app_format.format_id = format.id
-                                  LEFT JOIN app_function ON app.id = app_function.app_id and app.id ='$id'
-                                  INNER JOIN function ON app_function.function_id = function.id
-                                  LEFT JOIN app_type ON app.id = app_type.app_id and app.id ='$id'
-                                  INNER JOIN type ON app_type.type_id = type.id
-                                  GROUP BY app.id
-                                  ORDER BY app.id";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an description by app name
-	 *
-	 * @param string $name, $key
-	 * @return $key or false
-	 */
-	public function getAppInfo($name, $key) {
+	public function addApp($name) {
 		self::newDb ();
 
-		$query = "SELECT $key FROM app WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
+		// Check the app exists
+		$result = self::getAppInfo ( $name, 'id' );
 
-	/**
-	 * get an format id by format name
-	 *
-	 * @param string $name
-	 * @return format id or false
-	 */
-	public function getFormatId($name) {
-		self::newDb ();
-
-		$query = "SELECT id FROM format WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an format name by format id
-	 *
-	 * @param string $id
-	 * @return boolean false / mixed data on success
-	 */
-	public function getFormatName($id) {
-		self::newDb ();
-
-		$query = "SELECT name FROM format WHERE id = '$id'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an type id by type name
-	 *
-	 * @param string $name
-	 * @return type id or false
-	 */
-	public function getTypeId($name) {
-		self::newDb ();
-		$query = "SELECT id FROM type WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an type name by type id
-	 *
-	 * @param string $id
-	 * @return boolean false / mixed data on success
-	 */
-	public function getTypeName($id) {
-		self::newDb ();
-		$query = "SELECT name FROM type WHERE id = '$id'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an function id by function name
-	 *
-	 * @param string $name
-	 * @return boolean false / mixed data on success
-	 */
-	public function getFunctionId($name) {
-		self::newDb ();
-		$query = "SELECT id FROM function WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an function name by function id
-	 *
-	 * @param string $id
-	 * @return boolean false / mixed data on success
-	 */
-	public function getFunctionName($id) {
-		self::newDb ();
-		$query = "SELECT name FROM function WHERE id = '$id'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * get an app format id by app name
-	 *
-	 * @param string $name
-	 * @return boolean false / mixed data on success
-	 */
-	public function getAppFormatId($name) {
-		self::newDb ();
-
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		if (! $appId) {
-			return;
-		} else {
-			$query = "SELECT format_id FROM app_format WHERE app_id = '$appId'";
-			$result = self::$db->select ( $query );
+		// Insert an app data only if the app does not exist
+		if (! $result) {
+			$query = "INSERT INTO app (name) VALUES ('$name')";
+			$result = self::$db->query ( $query );
 			return $result;
 		}
+		// Return false when fail to insert
+		return;
 	}
 
 	/**
-	 * get an app format name by app name
+	 * Add a new format, function or type
 	 *
 	 * @param string $name
-	 * @return boolean false / mixed data on success
+	 * @return boolean false / mixed data on true
 	 */
-	public function getAppFormatName($name) {
+	public function addExt($ext, $extName) {
 		self::newDb ();
 
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		if (! $appId) {
+		// Check the format exists
+		$result = self::getExtId ( $ext, $extName );
+		if ($result) {
 			return;
 		} else {
-			$query = "SELECT format.name FROM app_format INNER JOIN format ON app_format.format_id = format.id WHERE app_format.app_id = '$appId'";
-			$result = self::$db->select ( $query );
+			$query = "INSERT INTO $ext (name) VALUES ('$extName')";
+			$result = self::$db->query ( $query );
 			return $result;
 		}
+		// Return false when fail to insert
+		return;
 	}
 
 	/**
-	 * get an app function id by app name
-	 *
-	 * @param string $name
-	 * @return boolean false / mixed data on success
-	 */
-	public function getAppFunctionId($name) {
-		self::newDb ();
-
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		if (! $appId) {
-			return;
-		} else {
-			$query = "SELECT function_id FROM app_function WHERE app_id = '$appId'";
-			$result = self::$db->select ( $query );
-			return $result;
-		}
-	}
-
-	/**
-	 * get an app function name by app name
-	 *
-	 * @param string $name
-	 * @return boolean false / mixed data on success
-	 */
-	public function getAppFunctionName($name) {
-		self::newDb ();
-
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		if (! $appId) {
-			return;
-		} else {
-			$query = "SELECT function.name FROM app_function INNER JOIN function ON app_function.function_id = function.id WHERE app_function.app_id = '$appId'";
-			$result = self::$db->select ( $query );
-			return $result;
-		}
-	}
-
-	/**
-	 * get an app format id by app name
-	 *
-	 * @param string $name
-	 * @return boolean false / mixed data on success
-	 */
-	public function getAppTypeId($name) {
-		self::newDb ();
-
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		if (! $appId) {
-			return;
-		} else {
-			$query = "SELECT type_id FROM app_type WHERE app_id = '$appId'";
-			$result = self::$db->select ( $query );
-			return $result;
-		}
-	}
-
-	/**
-	 * get an app type name by app name
-	 */
-	public function getAppTypeName($name) {
-		self::newDb ();
-
-		$appId = self::getAppIinfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		if (! $appId) {
-			return;
-		} else {
-			$query = "SELECT type.name FROM app_type INNER JOIN type ON app_type.type_id = type.id WHERE app_type.app_id = '$appId'";
-			$result = self::$db->select ( $query );
-			return $result;
-		}
-	}
-
-	/**
-	 * Fetch rows from the database query: user id
-	 *
-	 * @param string $id
-	 * @return boolean user exist true / otherwise false
-	 */
-	public function getUserName($id) {
-		self::newDb ();
-
-		$query = "SELECT name FROM user WHERE id = '$id'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * Fetch rows from the database query: user name
-	 *
-	 * @param string $name
-	 * @return boolean user exist true / otherwise false
-	 */
-	public function getUserId($name) {
-		self::newDb ();
-
-		$query = "SELECT id FROM user WHERE name = '$name'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * Fetch rows from the database query: user id
-	 *
-	 * @param string $id
-	 * @return boolena true when id exists / otherwise false
-	 */
-	public function isUserId($id) {
-		self::newDb ();
-
-		$query = "SELECT id FROM user WHERE id = '$id'";
-		$result = self::$db->select ( $query );
-		return $result;
-	}
-
-	/**
-	 * **************************
-	 * add functions start here *
-	 * **************************
-	 */
-
-	/**
-	 * Insert a row from the database query on users table
+	 * Add user
 	 *
 	 * @param string $id
 	 * @param string $password
@@ -418,20 +90,29 @@ class Api {
 	}
 
 	/**
-	 * add App name only if it does not exist
+	 * Add an app's extentions
 	 *
-	 * @param string $name
-	 * @return boolean false / mixed data on success
+	 * @param string $appName
+	 * @param string $ext
+	 * @param string $extName
+	 * @return If success return true, otherwise return false
 	 */
-	public function addApp($name) {
+	public function addAppExt($appName, $ext, $extName) {
 		self::newDb ();
 
-		// Check the app exists
-		$result = self::getAppInfo ( $name, 'id' );
+		// Check the app and key value exists
+		$appId = self::getAppInfo ( $appName, 'id' );
+		$appId = $appId [0] ['id'];
+		$extId = self::getExtId ( $ext, $extName );
+		$extId = $keyId [0] ['id'];
 
-		// Insert an app data only if the app does not exist
-		if (! $result) {
-			$query = "INSERT INTO app (name) VALUES ('$name')";
+		if (! $appId || ! $extId) {
+			return;
+		} else {
+			$table = "app_" . $key;
+			$keyCol = $key . "_id";
+
+			$query = "INSERT INTO app_" . $ext . " (app_id, " . $ext . "_id) VALUES ('.$appId', '$keyId')";
 			$result = self::$db->query ( $query );
 			return $result;
 		}
@@ -439,265 +120,290 @@ class Api {
 		return;
 	}
 
-	// TODO check again about update data
+	/**
+	 * Fetch rows from the database query: all apps
+	 *
+	 * @return array Data rows
+	 */
+	public function getAllApps() {
+		self::newDb ();
 
-    /**
-     * Update App
-     */
-
-    public function updateApp($name, $key, $value) {
-        self::newDb();
-        $appId = self::getAppInfo($name, 'id');
-
-        if(!$appId) {
-            return ;
-        } else {
-            $query = "UPDATE app SET $key = '$value' WHERE name = '$name'";
-            $result = self::$db->query($query);
-            return $result;
-        }
-        return;
-    }
+		// Select all data
+		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
+	       	 	  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
+	       	 	  FROM app
+	       	 	  LEFT JOIN app_format  ON app.id = app_format.app_id
+				  INNER JOIN format ON app_format.format_id = format.id
+				  LEFT JOIN app_function ON app.id = app_function.app_id
+				  INNER JOIN function ON app_function.function_id = function.id
+				  LEFT JOIN app_type ON app.id = app_type.app_id
+				  INNER JOIN type ON app_type.type_id = type.id
+				  GROUP BY app.id
+				  ORDER BY app.id";
+		$result = self::$db->select ( $query );
+		foreach($result as $root=>$keys) {
+			foreach($keys as $key=>$value) {
+				if($key == "format" || $key == "function" || $key == "type") {
+					$result[$root][$key] = explode(",", $value);
+				}
+			}
+		}
+		return $result;
+	}
 
 	/**
-	 * add format only if it does not exist
+	 * Get all function, format, or type ids
+	 *
+	 * @param string $table
+	 * @return $result for array Data rows
+	 */
+	public function getAllExtId($table) {
+		self::newDb ();
+
+		$query = "SELECT * FROM $table";
+		$result = self::$db->select ( $query );
+		return $result;
+	}
+
+	/**
+	 *  All attributes of an app by name
+	 *
+	 * @param string $appName
+	 * @return When the app exists return all attributes of the app, otherwise return false
+	 */
+	public function getAppByName($appName) {
+		self::newDb ();
+		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
+                                   GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
+                                   FROM app
+                                   LEFT JOIN app_format ON app.id = app_format.app_id and app.name = '$appName'
+                                   INNER JOIN format ON app_format.format_id = format.id
+                                   LEFT JOIN app_function ON app.id = app_function.app_id and app.name ='$appName'
+                                   INNER JOIN function ON app_function.function_id = function.id
+                                   LEFT JOIN app_type ON app.id = app_type.app_id and app.name ='$appName'
+                                   INNER JOIN type ON app_type.type_id = type.id
+                                   GROUP BY app.id
+                                   ORDER BY app.id";
+		$result = self::$db->select ( $query );
+		foreach($result as $root=>$keys) {
+			foreach($keys as $key=>$value) {
+				if($key == "format" || $key == "function" || $key == "type") {
+					$result[$root][$key] = explode(",", $value);
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * All attributes of an app by id
+	 *
+	 * @param integer $id
+	 * @return When the app exists return all attributes of the app, otherwise return false
+	 */
+	public function getAppById($appId) {
+		self::newDb ();
+		$query = "SELECT app.id, app.name, app.description, app.icon, app.privacy, app.tutorial, app.uri, app.price, app.support, app.testimonial,
+                                  GROUP_CONCAT(DISTINCT format.name) as format, GROUP_CONCAT(DISTINCT function.name) as function, GROUP_CONCAT(DISTINCT type.name) as type
+                                  FROM app
+                                  LEFT JOIN app_format ON app.id = app_format.app_id and app.id = '$appId'
+                                  INNER JOIN format ON app_format.format_id = format.id
+                                  LEFT JOIN app_function ON app.id = app_function.app_id and app.id ='$appId'
+                                  INNER JOIN function ON app_function.function_id = function.id
+                                  LEFT JOIN app_type ON app.id = app_type.app_id and app.id ='$appId'
+                                  INNER JOIN type ON app_type.type_id = type.id
+                                  GROUP BY app.id
+                                  ORDER BY app.id";
+		$result = self::$db->select ( $query );
+		foreach($result as $root=>$keys) {
+			foreach($keys as $key=>$value) {
+				if($key == "format" || $key == "function" || $key == "type") {
+					$result[$root][$key] = explode(",", $value);
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Get an attribute of the app by app name with the app's attribute name
+	 *
+	 * @param string $appName,
+	 * @param string $col
+	 * @return the attribute or false
+	 */
+	public function getAppInfo($appName, $colName) {
+		self::newDb ();
+
+		$query = "SELECT $colName FROM app WHERE name = '$appName'";
+		$result = self::$db->select ( $query );
+		return $result;
+	}
+
+	/**
+	 * Get all name of format, function, or type
+	 */
+	public function getExt($ext) {
+		self::newDb();
+
+		$query = "SELECT * FROM $ext";
+		$result = self::$db->select($query);
+		return $result;
+	}
+
+	/**
+	 * Get ids of format, function, or type using its name
+	 *
+	 * @param string $table,
+	 * @param string $name
+	 * @return when the name exists return an id of name on table, otherwise return false
+	 */
+	public function getExtId($table, $name) {
+		self::newDb ();
+
+		$query = "SELECT id FROM $table WHERE name = '$name'";
+		$result = self::$db->select ( $query );
+		return $result;
+	}
+
+	/**
+	 * Get name of format, function, or type using its id
+	 * @param string $table
+	 * @param string $id
+	 * @return when the id exists return an name of id on the table, otherwise return false
+	 */
+	public function getExtName($table, $id) {
+		self::newDb ();
+
+		$query = "SELECT name FROM $table WHERE id = '$id'";
+		$result = self::$db->select ( $query );
+		return $result;
+	}
+
+	/**
+	 * Get format, function, or type ids of app by app name
+	 *
+	 * @param string $appName
+	 * @param string $key
+	 * @return when the data exists return the data, otherwise return false
+	 */
+	public function getAppExtId($appName, $ext) {
+		self::newDb ();
+
+		$appId = self::getAppInfo ( $appName, 'id' );
+		$appId = $appId [0] ['id'];
+
+		if (! $appId) {
+			return;
+		} else {
+			$query = "SELECT " . $ext . "_id FROM app_" . $ext . " WHERE app_id = '$appId'";
+			$result = self::$db->select ( $query );
+			return $result;
+		}
+	}
+
+	/**
+	 * Get format, function or type namesof app by app name
 	 *
 	 * @param string $name
+	 * @param string $key
+	 * @return when the data exists return the data, otherwise return false
+	 */
+	public function getAppExtName($appName, $ext) {
+		self::newDb ();
+
+		$appId = self::getAppInfo ( $appName, 'id' );
+		$appId = $appId [0] ['id'];
+
+		if (! $appId) {
+			return;
+		} else {
+			$query = "SELECT " . $ext . "name FROM app_" . $ext .
+						" INNER JOIN " . $ext . " ON app_" . $ext . "." . $ext . "_id = " . $ext . ".id WHERE app_" . $ext . ".app_id = '$appId'";
+			$result = self::$db->select ( $query );
+			return $result;
+		}
+	}
+
+	/**
+	 * Get user name by user id
+	 *
+	 * @param string $id
+	 * @return When the user id exists return the data, otherwise return false
+	 */
+	public function getUserName($id) {
+		self::newDb ();
+
+		$query = "SELECT name FROM user WHERE id = '$id'";
+		$result = self::$db->select ( $query );
+		return $result;
+	}
+
+	/**
+	 * Get user id by user name
+	 *
+	 * @param string $name
+	 * @return When the user name exists return the data, otherwise return false
+	 */
+	public function getUserId($name) {
+		self::newDb ();
+
+		$query = "SELECT id FROM user WHERE name = '$name'";
+		$result = self::$db->select ( $query );
+		return $result;
+	}
+
+	/**
+	 * User id validataion check
+	 *
+	 * @param string $id
+	 * @return When the user id exists return the data, otherwise return false
+	 */
+	public function isUserId($id) {
+		self::newDb ();
+
+		$query = "SELECT id FROM user WHERE id = '$id'";
+		$result = self::$db->select ( $query );
+		return $result;
+	}
+
+	/**
+	 * Update an app's attributes
+	 */
+	public function updateApp($appName, $col, $value) {
+		self::newDb ();
+		$appId = self::getAppInfo ( $appName, 'id' );
+
+		if (! $appId) {
+			return;
+		} else {
+			$query = "UPDATE app SET $col = '$value' WHERE name = '$appName'";
+			$result = self::$db->query ( $query );
+			return $result;
+		}
+		return;
+	}
+
+	/**
+	 * Update existing format, function or type
+	 *
+	 * @param string $ext
+	 * @param string $extName
 	 * @return boolean false / mixed data on true
 	 */
-	public function addFormat($name) {
+	public function updateExt($ext, $extName) {
 		self::newDb ();
 
 		// Check the format exists
-		$result = self::getFormatId ( $name );
-		if ($result) {
+		$result = self::getExtId ( $ext, $extName );
+		if (!$result) {
 			return;
 		} else {
-			$query = "INSERT INTO format (name) VALUES ('$name')";
+			$query = "UPDATE $ext SET name = '$extName' WHERE name = '$extName'";
 			$result = self::$db->query ( $query );
 			return $result;
 		}
 		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * add function only if it does not exist
-	 *
-	 * @param string $name
-	 * @return boolena false / mixed data on true
-	 */
-	public function addFunction($name) {
-		self::newDb ();
-
-		// Check the function exists
-		$result = self::getFunctionId ( $name );
-		if ($result) {
-			return;
-		} else {
-			$query = "INSERT INTO function (name) VALUES ('$name')";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * add type only if it does not exist
-	 *
-	 * @param string $name
-	 * @return bloolean false / mixed data on true
-	 */
-	public function addType($name) {
-		self::newDb ();
-
-		// Check the type exists
-		$result = self::getTypeId ( $name );
-		if ($result) {
-			return;
-		} else {
-			$query = "INSERT INTO type (name) VALUES ('$name')";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return when fail to insert
-		return;
-	}
-
-	/**
-	 * add app_format (multiplication)
-	 *
-	 * @param string $name
-	 * @param string $format
-	 * @return boolean false or appFomatId / mixed data on success
-	 */
-	public function addAppFormat($name, $format) {
-		self::newDb ();
-
-		// Check the app exists
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		$formatId = self::getFormatId ( $format );
-		$formatId = $formatId [0] ['id'];
-
-		if (! $appId || ! $formatId) {
-			return;
-		} else {
-			$query = "INSERT INTO app_format (app_id, format_id) VALUES ('$appId', '$formatId')";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * add app_function (multiplication)
-	 *
-	 * @param string $name
-	 * @param string $function
-	 * @return boolean false or appFunctionId/ mixed data on success
-	 */
-	public function addAppFunction($name, $function) {
-		self::newDb ();
-
-		// Check the app exists
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		$functionId = self::getFunctionId ( $function );
-		$functionId = $functionId [0] ['id'];
-
-		if (! appId || ! $functionId) {
-			return;
-		} else {
-			$query = "INSERT INTO app_function (app_id, function_id) VALUES ('$appId', '$functionId')";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to insert
-		return;
-	}
-
-	/**
-	 * add App type
-	 *
-	 * @param string $name
-	 * @param string $type
-	 * @return boolean false / true on success
-	 */
-	public function addAppType($name, $type) {
-		self::newDb ();
-		// Check the app exists
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-		$typeId = self::getTypeId ( $type );
-		$typeId = $typeId [0] ['id'];
-
-		if (! $appId || ! $typeId) {
-			return;
-		} else {
-			$query = "INSERT INTO app_type (app_id, type_id) VALUES ('$appId', '$typeId')";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return when fail to insert
-		return;
-	}
-
-	/**
-	 * ****************************
-	 * delete function start here *
-	 * ****************************
-	 */
-
-	/**
-	 * Delete a row from the database query on users table
-	 *
-	 * @param string $id
-	 * @return boolean false / mixed data on success
-	 */
-	public function delUser($id) {
-		self::newDb ();
-
-		// Check the id exists
-		$result = self::getUserId ( $id );
-		if ($result) {
-			return;
-		} else {
-			$query = "DELETE FROM user WHERE id = '$id'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		// Return false when fail to delete
-		return;
-	}
-
-	/**
-	 * Delete app format
-	 *
-	 * @param string $name
-	 * @return boolean false on fail
-	 */
-	public function delAppFormat($name) {
-		self::newDb ();
-		// Check the app exists
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-
-		if (! $appId) {
-			return;
-		} else {
-			$query = " DELETE FROM app_format WHERE app_id = '$appId'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-		return;
-	}
-
-	/**
-	 * Delete app function
-	 *
-	 * @param string $name
-	 * @return boolean false on fail
-	 */
-	public function delAppFunction($name) {
-		self::newDb ();
-		// Check the app exists
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-
-		if (! $appId) {
-			return;
-		} else {
-			$query = " DELETE FROM app_function WHERE app_id = '$appId'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-
-		return;
-	}
-
-	/**
-	 * Delete app type
-	 *
-	 * @param string $name
-	 * @return boolean false on fail
-	 */
-	public function delAppType($name) {
-		self::newDb ();
-		// Check the app exists
-		$appId = self::getAppInfo ( $name, 'id' );
-		$appId = $appId [0] ['id'];
-
-		if (! $appId) {
-			return;
-		} else {
-			$query = " DELETE FROM app_type WHERE app_id = '$appId'";
-			$result = self::$db->query ( $query );
-			return $result;
-		}
-
 		return;
 	}
 
@@ -707,28 +413,24 @@ class Api {
 	 * @param string $name
 	 * @return boolean false / mixed data on success
 	 */
-	public function delApp($name) {
+	public function delApp($appName) {
 		self::newDb ();
 
 		// Check the app exists
-		$appId = self::getAppInfo ( $name, 'id' );
+		$appId = self::getAppInfo ( $appName, 'id' );
 		$appId = $appId [0] ['id'];
 
 		if (! $appId) {
 			return;
 		} else {
 			// Delete an app from app_format, app_function, and app_type when success to delete the app
-			$result = self::delAppFormat ( $name );
-			if (! $result) {
-				return;
-			}
-			$result = self::delAppFunction ( $name );
-			if (! $result) {
-				return;
-			}
-			$result = self::delAppType ( $name );
-			if (! $result) {
-				return;
+			$exts = array("format", "function", "type");
+
+			foreach($exts as $ext) {
+				$result = self::delAppExt($appName, $ext);
+				if(! $result) {
+					return "Extention delete error.";
+				}
 			}
 
 			// Delete an app
@@ -748,68 +450,66 @@ class Api {
 	}
 
 	/**
-	 * Delete format
+	 * Delete a format, function or type
 	 *
 	 * @param string $name
-	 * @return boolean false on fail
+	 * @return boolean false / mixed data on true
 	 */
-	public function delFormat($name) {
+	public function delExt($ext, $extName) {
 		self::newDb ();
 
-		// check the available
-		$result = self::getFormatId ( $name );
-		$result = $result [0] ['id'];
-
-		if (! $result) {
+		// Check the format exists
+		$result = self::getExtId ( $ext, $extName );
+		if ($result) {
 			return;
 		} else {
-			$query = "DELETE FROM format WHERE id = '$result'";
+			$query = "DELETE FROM $ext WHERE name = '$extName'";
 			$result = self::$db->query ( $query );
 			return $result;
 		}
+		// Return false when fail to insert
 		return;
 	}
 
 	/**
-	 * Delete function
+	 * Delete a row from the database query on users table
 	 *
-	 * @param string $name
-	 * @return boolean false on fail
+	 * @param string $id
+	 * @return If success, return true, otherwise return false
 	 */
-	public function delFunction($name) {
+	public function delUser($id) {
 		self::newDb ();
 
-		// check the available
-		$result = self::getFunctionId ( $name );
-		$result = $result [0] ['id'];
-
-		if (! $result) {
+		// Check the id exists
+		$result = self::getUserId ( $id );
+		if ($result) {
 			return;
 		} else {
-			$query = "DELETE FROM function WHERE id = '$result'";
+			$query = "DELETE FROM user WHERE id = '$id'";
 			$result = self::$db->query ( $query );
 			return $result;
 		}
+		// Return false when fail to delete
 		return;
 	}
 
 	/**
-	 * Delete type
+	 * Delete an app's extention
 	 *
-	 * @param string $name
-	 * @return boolean false on fail
+	 * @param string $ext
+	 * @param string $appName
+	 * @return If success, return true, otherwise return false
 	 */
-	public function delType($name) {
+	public function delAppExt($appName, $ext) {
 		self::newDb ();
+		// Check the app exists
+		$appId = self::getAppInfo ( $appName, 'id' );
+		$appId = $appId [0] ['id'];
 
-		// check the available
-		$result = self::getTypeId ( $name );
-		$result = $result [0] ['id'];
-
-		if (! $result) {
+		if (! $appId) {
 			return;
 		} else {
-			$query = "DELETE FROM type WHERE id = '$result'";
+			$query = "DELETE FROM app_" . $ext . " WHERE app_id = '$appId'";
 			$result = self::$db->query ( $query );
 			return $result;
 		}
